@@ -1,0 +1,13 @@
+{
+    "description": "This is actions-workflow-npm",
+    "maintainers": [
+        "developer-productivity"
+    ],
+    "checks": [
+        "build"
+    ],
+    "extraProtectedBranches": [],
+    "enableIssues": true,
+    "enableWiki": false,
+    "enableProjects": false
+}

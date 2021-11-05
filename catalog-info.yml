@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "actions-workflow-npm"
+  github.com/project-slug: Tradeshift/actions-workflow-npm
+spec:
+  type: other
+  lifecycle: experimental
+  owner: "developer-productivity"

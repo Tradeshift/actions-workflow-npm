@@ -9,5 +9,9 @@
     "extraProtectedBranches": [],
     "enableIssues": true,
     "enableWiki": false,
-    "enableProjects": false
+    "enableProjects": false,
+    "topics": [
+        "github-action",
+        "workflow"
+    ]
 }

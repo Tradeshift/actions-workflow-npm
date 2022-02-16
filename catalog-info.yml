@@ -3,6 +3,9 @@ kind: Component
 metadata:
   name: "actions-workflow-npm"
   github.com/project-slug: Tradeshift/actions-workflow-npm
+  tags:
+    - github-action
+    - workflow
 spec:
   type: other
   lifecycle: experimental

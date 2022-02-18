@@ -1,0 +1,8 @@
+.DS_Store
+.env
+.vscode
+.idea
+dist
+node_modules
+target
+temp

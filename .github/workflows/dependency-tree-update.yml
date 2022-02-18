@@ -1,0 +1,71 @@
+name: Dependency tree update
+on:
+  workflow_call:
+    secrets:
+      github-token:
+        description: "Token used to checkout code and create PR"
+        required: true
+      gpg-key:
+        description: The client key to use for commit author and signing
+        required: true
+    inputs:
+      path: 
+        description: "Path to the project folder"
+        default: "."
+        required: false
+        type: string
+    
+jobs:
+  build:
+    name: tradeshift/dependency-tree-update
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+      - run: |
+          [ -f .nvmrc ]
+        continue-on-error: true
+        id: nvmrc
+      - name: Set-up Node with .nvmrc
+        if: ${{ steps.nvmrc.outcome == 'success' }}
+        uses: actions/setup-node@v2
+        with:
+          node-version-file: '.nvmrc'
+      - name: Set-up Node 
+        if: ${{ steps.nvmrc.outcome != 'success' }}
+        uses: actions/setup-node@v2
+      - name: Update dependency tree.
+        working-directory:  ${{ inputs.path }}
+        run: |
+          rm -rf node_modules
+          if [ -f package-lock.json ]; then
+            rm package-lock.json;
+            npm install;
+          elif [ -f yarn.lock ]; then
+            rm yarn.lock;
+            yarn;
+          fi;
+      - name: Configure git for tradeshiftci
+        id: configure
+        uses: tradeshift/actions-git/configure-from-gpg-key@v1
+        with:
+          gpg-key: ${{ secrets.gpg-key }}
+      - name: Create Pull Request
+        uses: tradeshift/create-pull-request@v3
+        with:
+          commit-message: 'chore: update dependency tree'
+          token: ${{ secrets.github-token }}
+          committer: ${{ steps.configure.outputs.user }}
+          author: ${{ steps.configure.outputs.user }}
+          title: 'chore: update dependency tree'
+          body: |
+            Updated dependency tree for the lock file of your node project. 
+
+            By regenerating the lockfiles, the dependency tree has been updated to pull in the latest packages that match the dependency ranges in `package.json`. For each of those dependencies, the sub-dependencies are updated and so on. 
+
+            None of these updates should be a breaking change, since they respect the [version ranges](https://semver.npmjs.com/). They'll potentially save you and your team a lot of time by preventing `Dependabot` vulnerability alerts that you'd have to deal with manually otherwise. 
+
+            Good luck!
+
+            _This workflow was created and is maintained by the [Developer Productivity](https://tradeshift.slack.com/archives/C78TDU0FJ) team._
+          branch: automatic-dependency-tree-update

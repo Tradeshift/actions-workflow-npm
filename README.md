@@ -29,6 +29,8 @@ By regenerating the lockfiles, the dependency tree will be updated to pull in th
 
 None of these updates should be a breaking change, since they respect the [version ranges](https://semver.npmjs.com/). They'll potentially save you and your team a lot of time by preventing `Dependabot` vulnerability alerts that you'd have to deal with manually otherwise. 
 
+The lock file will be generated using the `npm`/`yarn` version that matches the `node` version specified on the `.nvmrc` file for your project.
+
 To enable for a repo, create a new workflow with the following contents:
 ```yaml
 # .github/workflows/dependency-tree-update.yml

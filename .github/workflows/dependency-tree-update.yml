@@ -26,6 +26,11 @@ jobs:
       - name: Checkout Branch
         uses: actions/checkout@v2
       - run: |
+          echo "::set-output name=sufix::$(echo -n ${inputs.path} | md5sum)"
+          echo "::set-output name=original::$(${inputs.path})"
+        id: sufix
+      - name: Test path sufix
+      - run: |
           [ -f .nvmrc ]
         continue-on-error: true
         id: nvmrc

@@ -3,10 +3,13 @@ on:
   workflow_call:
     secrets:
       github-token:
-        description: "Token used to checkout code and create PR"
+        description: Token used to checkout code and create PR
         required: true
       gpg-key:
         description: The client key to use for commit author and signing
+        required: true
+      npm-token:
+        description: Token used to authenticate to the private GitHub npm registry
         required: true
     inputs:
       path: 
@@ -31,9 +34,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version-file: '.nvmrc'
+          registry-url: 'https://npm.pkg.github.com'
       - name: Set-up Node 
         if: ${{ steps.nvmrc.outcome != 'success' }}
         uses: actions/setup-node@v2
+        with:
+          registry-url: 'https://npm.pkg.github.com'
       - name: Update dependency tree.
         working-directory:  ${{ inputs.path }}
         run: |
@@ -45,11 +51,18 @@ jobs:
             rm yarn.lock;
             yarn;
           fi;
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm-token }}
       - name: Configure git for tradeshiftci
         id: configure
         uses: tradeshift/actions-git/configure-from-gpg-key@v1
         with:
-          gpg-key: ${{ secrets.gpg-key }}
+          gpg-key: ${{ secrets.gpg-key }}      
+      - run: echo ${{ inputs.path }} > .update-deps
+      - id: hash 
+        run: |
+          echo "::set-output name=suffix::$(echo ${{ hashFiles('.update-deps') }} | head -c7)";
+          rm .update-deps
       - name: Create Pull Request
         uses: tradeshift/create-pull-request@v3
         with:
@@ -68,4 +81,4 @@ jobs:
             Good luck!
 
             _This workflow was created and is maintained by the [Developer Productivity](https://tradeshift.slack.com/archives/C78TDU0FJ) team._
-          branch: automatic-dependency-tree-update
+          branch: auto-update-dependencies-${{ steps.hash.outputs.suffix }}

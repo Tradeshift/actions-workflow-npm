@@ -48,4 +48,5 @@ jobs:
       npm-token: ${{ secrets.NPM_TOKEN }} # Token used to authenticate to the private GitHub npm registry
     with:
       path: . # Optional paramater in case your application is not at the root of your, otherwise it defaults to "."
+      # runs-on: self-hosted # Optional paramater to define where to run the workflow, otherwise it defaults to ubuntu-latest. More information at https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
 ```

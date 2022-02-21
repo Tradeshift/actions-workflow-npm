@@ -13,15 +13,19 @@ on:
         required: true
     inputs:
       path: 
-        description: "Path to the project folder"
+        description: Path to the project folder
         default: "."
         required: false
         type: string
-    
+      runs-on:
+        description: Where to run the workflow. More information at https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
+        default: "ubuntu-latest"
+        required: false
+        type: string
 jobs:
   build:
     name: tradeshift/dependency-tree-update
-    runs-on: self-hosted
+    runs-on: ${{ inputs.runs-on }}
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v2

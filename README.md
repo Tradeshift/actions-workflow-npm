@@ -45,6 +45,7 @@ jobs:
     secrets:
       gpg-key: ${{ secrets.TRADESHIFTCI_GPG_KEY }} # The client key to use for commit author and signing
       github-token: ${{ secrets.GH_TOKEN }} # Token used to checkout code and create PR. Using a personal access token to have workflows run on the created PR.
+      npm-token: ${{ secrets.NPM_TOKEN }} # Token used to authenticate to the private GitHub npm registry
     with:
       path: . # Optional paramater in case your application is not at the root of your, otherwise it defaults to "."
 ```

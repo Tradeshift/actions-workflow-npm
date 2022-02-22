@@ -22,7 +22,7 @@ jobs:
       npm-read-token: ${{ secrets.NPM_TOKEN }}
 ```
 
-### Dependency tree update
+### Dependency tree auto update
 Shared workflow that updates the dependency tree for the lock file of your node project. 
 
 By regenerating the lockfiles, the dependency tree will be updated to pull in the latest packages that match the dependency ranges in `package.json`. For each of those dependencies, the sub-dependencies are updated and so on. 
@@ -33,8 +33,8 @@ The lock file will be generated using the `npm`/`yarn` version that matches the 
 
 To enable for a repo, create a new workflow with the following contents:
 ```yaml
-# .github/workflows/dependency-tree-update.yml
-name: Dependency tree update
+# .github/workflows/dependency-auto-update.yml
+name: Dependency tree auto update
 on:
   schedule:
     - cron:  '0 11 * * 1,4' # Frequency of your preference, this one runs Mondays and Thursdays at 11am

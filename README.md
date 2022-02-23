@@ -3,9 +3,7 @@
 Shared workflows for npm packages, such as creating pre-releases and semantic
 release automation.
 
-## Usage
-
-### npm publish
+## npm publish
 
 ```yaml
 # .github/workflows/npm-publish.yml
@@ -22,20 +20,20 @@ jobs:
       npm-read-token: ${{ secrets.NPM_TOKEN }}
 ```
 
-### Dependency tree update
-Shared workflow that updates the dependency tree for the lock file of your node project. 
+## Dependency tree auto-update
+Shared workflow that auto-updates the dependency tree for the lock file of your node project.
 
-By regenerating the lockfiles, the dependency tree will be updated to pull in the latest packages that match the dependency ranges in `package.json`. For each of those dependencies, the sub-dependencies are updated and so on. 
+By regenerating the lockfiles, the dependency tree will be updated to pull in the latest packages that match the dependency ranges in `package.json`. For each of those dependencies, the sub-dependencies are updated, and so on. 
 
 None of these updates should be a breaking change, since they respect the [version ranges](https://semver.npmjs.com/). They'll potentially save you and your team a lot of time by preventing `Dependabot` vulnerability alerts that you'd have to deal with manually otherwise. 
 
 The lock file will be generated using the `npm`/`yarn` version that matches the `node` version specified on the `.nvmrc` file for your project.
 
-To enable for a repo, create a new workflow with the following contents:
+To enable it for a repo, create a new workflow with the following contents:
 
 ```yaml
-# .github/workflows/dependency-tree-update.yml
-name: Dependency tree update
+# .github/workflows/dependency-auto-update.yml
+name: Dependency tree auto-update
 on:
   schedule:
     - cron:  '0 11 * * 1,4' # Frequency of your preference, this one runs Mondays and Thursdays at 11am
@@ -52,7 +50,7 @@ jobs:
       # runs-on: self-hosted # Optional paramater to define where to run the workflow, otherwise it defaults to ubuntu-latest. More information at https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
 ```
 
-If you have multiple sub folders with managed node modules you can specify multiple folders on the same schedule like this:
+If you have multiple subfolders with managed node modules you can specify multiple folders on the same schedule like this:
 
 ```yaml
 # .github/workflows/dependency-tree-update.yml

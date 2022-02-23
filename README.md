@@ -32,6 +32,7 @@ None of these updates should be a breaking change, since they respect the [versi
 The lock file will be generated using the `npm`/`yarn` version that matches the `node` version specified on the `.nvmrc` file for your project.
 
 To enable for a repo, create a new workflow with the following contents:
+
 ```yaml
 # .github/workflows/dependency-tree-update.yml
 name: Dependency tree update
@@ -49,4 +50,27 @@ jobs:
     with:
       path: . # Optional paramater in case your application is not at the root of your, otherwise it defaults to "."
       # runs-on: self-hosted # Optional paramater to define where to run the workflow, otherwise it defaults to ubuntu-latest. More information at https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
+```
+
+If you have multiple sub folders with managed node modules you can specify multiple folders on the same schedule like this:
+
+```yaml
+# .github/workflows/dependency-tree-update.yml
+name: Dependency tree update
+on:
+  schedule:
+    ...
+jobs:
+  update:
+    uses: tradeshift/actions-workflow-npm/.github/workflows/dependency-tree-update.yml@v1
+    secrets:
+      ...
+    with:
+      path: . # Main path
+  update-submodule:
+    uses: tradeshift/actions-workflow-npm/.github/workflows/dependency-tree-update.yml@v1
+    secrets:
+      ...
+    with:
+      path: ./client/ # Module path
 ```

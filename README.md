@@ -53,7 +53,7 @@ jobs:
 If you have multiple subfolders with managed node modules you can specify multiple folders on the same schedule like this:
 
 ```yaml
-# .github/workflows/dependency-tree-update.yml
+# .github/workflows/dependency-auto-update.yml
 name: Dependency tree update
 on:
   schedule:

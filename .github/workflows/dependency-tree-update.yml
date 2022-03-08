@@ -69,6 +69,7 @@ jobs:
           echo "::set-output name=suffix::$(echo ${{ hashFiles('.update-deps') }} | head -c7)";
           rm .update-deps
       - id: formatPath
+        if: ${{ always() }}
         run: |
           echo "::set-output name=path::$(echo ${{ inputs.path }} | sed 's:/*$::')" 
       - name: Create Pull Request

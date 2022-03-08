@@ -46,7 +46,6 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
       - name: Update dependency tree.
         id: update
-        continue-on-error: true
         working-directory:  ${{ inputs.path }}
         run: |
           rm -rf node_modules
@@ -73,7 +72,6 @@ jobs:
         run: |
           echo "::set-output name=path::$(echo ${{ inputs.path }} | sed 's:/*$::')" 
       - name: Create Pull Request
-        if: ${{ steps.update.outcome == 'success' }}
         uses: tradeshift/create-pull-request@v3
         with:
           commit-message: 'chore: update dependency tree for ${{ steps.formatPath.outputs.path }}/package.json'
@@ -93,7 +91,7 @@ jobs:
             _This workflow was created and is maintained by the [Developer Productivity](https://tradeshift.slack.com/archives/C78TDU0FJ) team._
           branch: auto-update-dependencies-${{ steps.hash.outputs.suffix }}
       - name: 'Create an issue when auto-update fails'
-        if: ${{ steps.update.outcome != 'success' }}
+        if: ${{ failure() && !cancelled() }}
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.github-token }}

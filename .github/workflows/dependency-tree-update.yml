@@ -45,6 +45,7 @@ jobs:
         with:
           registry-url: 'https://npm.pkg.github.com'
       - name: Update dependency tree.
+        id: update
         working-directory:  ${{ inputs.path }}
         run: |
           rm -rf node_modules
@@ -67,10 +68,14 @@ jobs:
         run: |
           echo "::set-output name=suffix::$(echo ${{ hashFiles('.update-deps') }} | head -c7)";
           rm .update-deps
+      - id: formatPath
+        if: ${{ always() }}
+        run: |
+          echo "::set-output name=path::$(echo ${{ inputs.path }} | sed 's:/*$::')" 
       - name: Create Pull Request
         uses: tradeshift/create-pull-request@v3
         with:
-          commit-message: 'chore: update dependency tree'
+          commit-message: 'chore: update dependency tree for ${{ steps.formatPath.outputs.path }}/package.json'
           token: ${{ secrets.github-token }}
           committer: ${{ steps.configure.outputs.user }}
           author: ${{ steps.configure.outputs.user }}
@@ -86,3 +91,16 @@ jobs:
 
             _This workflow was created and is maintained by the [Developer Productivity](https://tradeshift.slack.com/archives/C78TDU0FJ) team._
           branch: auto-update-dependencies-${{ steps.hash.outputs.suffix }}
+      - name: 'Create an issue when auto-update fails'
+        if: ${{ failure() && !cancelled() }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.github-token }}
+          script: |
+            github.rest.issues.create({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Dependency tree auto-update for ${{ steps.formatPath.outputs.path }}/package.json failed.',
+              body: `The dependency auto-update failed for the ${{ steps.formatPath.outputs.path }}/package.json file, which might indicate problems with the dependency tree for your project. You can view the failed job [here](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).`,
+            });

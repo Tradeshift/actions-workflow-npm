@@ -55,6 +55,11 @@ jobs:
           elif [ -f yarn.lock ]; then
             rm yarn.lock;
             yarn;
+          elif [ -f package.json ]; then
+            npm install;
+          else
+            echo "No package files were found. Maybe a path error?"
+            exit 1;
           fi;
         env:
           NODE_AUTH_TOKEN: ${{ secrets.npm-token }}

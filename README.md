@@ -27,7 +27,7 @@ By regenerating the lockfiles, the dependency tree will be updated to pull in th
 
 None of these updates should be a breaking change, since they respect the [version ranges](https://semver.npmjs.com/). They'll potentially save you and your team a lot of time by preventing `Dependabot` vulnerability alerts that you'd have to deal with manually otherwise. 
 
-The lock file will be generated using the `npm`/`yarn` version that matches the `node` version specified on the `.nvmrc` file for your project.
+The lock file will be generated using the `npm`/`yarn` version that matches the `node` version specified on the `.nvmrc` file for your project. The workflow also removes entries for `package-lock.json` on your `.gitignore` file.
 
 To enable it for a repo, create a new workflow with the following contents:
 
@@ -46,7 +46,7 @@ jobs:
       github-token: ${{ secrets.GH_TOKEN }} # Token used to checkout code and create PR. Using a personal access token to have workflows run on the created PR.
       npm-token: ${{ secrets.NPM_TOKEN }} # Token used to authenticate to the private GitHub npm registry
     with:
-      path: . # Optional paramater in case your application is not at the root of your, otherwise it defaults to "."
+      path: . # Optional paramater in case your application is not at the root of your repo, otherwise it defaults to "."
       # runs-on: self-hosted # Optional paramater to define where to run the workflow, otherwise it defaults to ubuntu-latest. More information at https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
 ```
 

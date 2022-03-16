@@ -44,10 +44,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           registry-url: 'https://npm.pkg.github.com'
-      - name: Remove package-lock.json entry from .gitignore.
+      - name: Remove package-lock.json and yarn.lock entries from .gitignore.
         run: |
           if [ -f .gitignore ]; then
             sed -i '/package-lock.json/d' .gitignore;
+            sed -i '/yarn.lock/d' .gitignore;
           fi;
       - name: Update dependency tree.
         id: update

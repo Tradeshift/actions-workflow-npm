@@ -27,9 +27,11 @@ By regenerating the lockfiles, the dependency tree will be updated to pull in th
 
 None of these updates should be a breaking change, since they respect the [version ranges](https://semver.npmjs.com/). They'll potentially save you and your team a lot of time by preventing `Dependabot` vulnerability alerts that you'd have to deal with manually otherwise. 
 
-The lock file will be generated using the `npm`/`yarn` version that matches the `node` version specified on the `.nvmrc` file for your project. The workflow also removes entries for `package-lock.json` or `yarn.lock` on your `.gitignore` file.
+The lock file will be generated using the `npm`/`yarn` version that matches the `node` version specified on the `.nvmrc` file for your project. The workflow also removes entries for `package-lock.json` or `yarn.lock` on your `.gitignore` file. 
 
-To enable it for a repo, create a new workflow with the following contents:
+For the workflow to work, you need to give write access for your repo to the [ci-workers](https://github.com/orgs/Tradeshift/teams/ci-workers/members) team.
+
+To enable it, create a new workflow with the following contents:
 
 ```yaml
 # .github/workflows/dependency-auto-update.yml

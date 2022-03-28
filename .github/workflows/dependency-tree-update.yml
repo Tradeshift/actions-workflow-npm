@@ -59,6 +59,7 @@ jobs:
             rm package-lock.json;
             npm install;
           elif [ -f yarn.lock ]; then
+            export YARN_ENABLE_IMMUTABLE_INSTALLS=false;
             rm yarn.lock;
             yarn;
           elif [ -f package.json ]; then

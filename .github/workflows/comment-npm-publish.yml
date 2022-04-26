@@ -12,11 +12,10 @@ jobs:
   npm-publish:
     # This job only runs for pull request comments
     name: npm publish
-    # TODO: aliases for this: yarn publish?
     if: github.event.comment.body == 'npm publish'
     runs-on: self-hosted
     steps:
-      - name: '📦 Update comment'
+      - name: "📦 Update comment"
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.github-token }}
@@ -44,11 +43,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 14
-          registry-url: 'https://npm.pkg.github.com/'
-          cache: 'npm'
+          registry-url: "https://npm.pkg.github.com/"
+          cache: "npm"
 
       - name: 📥 Download deps
-        run: npm install
+        run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.npm-read-token }}
 
@@ -64,7 +63,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.github-token }}
 
       # Report results:
-      - name: '📦 Success message'
+      - name: "📦 Success message"
         if: ${{ success() }}
         uses: actions/github-script@v4
         with:
@@ -73,7 +72,7 @@ jobs:
             const { repo: { owner, repo }, payload  } = context;
             const { name: packageName, version } = require(`${process.env.GITHUB_WORKSPACE}/package.json`);
             const body = `Pre-release of \`${packageName}\` successfully published :rocket:\n\n` +
-              `\`\`\`\nyarn add ${packageName}@${version}\n\`\`\`\n\n` +
+              `\`\`\`\nnpm install ${packageName}@${version}\n\`\`\`\n\n` +
               "Happy testing :tophat:";
             github.issues.updateComment({
               owner,
@@ -85,7 +84,7 @@ jobs:
                 `[View job](https://github.com/${owner}/${repo}/actions/runs/${context.runId})`
               ].join('\n\n')
             });
-      - name: '📦 Failure message'
+      - name: "📦 Failure message"
         if: ${{ failure() }}
         uses: actions/github-script@v4
         with:

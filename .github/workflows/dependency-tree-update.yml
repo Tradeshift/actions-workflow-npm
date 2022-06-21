@@ -29,18 +29,32 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v2
-      - run: |
-          [ -f .nvmrc ]
+      - name: Check for .nvmrc file root folder
+        continue-on-error: true
+        id: nvmrcRoot
+        run: |
+            [ -f .nvmrc ]
+      - name: Check for .nvmrc file input path
+        if: ${{ steps.nvmrcRoot.outcome != 'success' }}
+        working-directory:  ${{ inputs.path }}
         continue-on-error: true
         id: nvmrc
-      - name: Set-up Node with .nvmrc
-        if: ${{ steps.nvmrc.outcome == 'success' }}
+        run: |
+            [ -f .nvmrc ]
+      - name: Set-up Node with .nvmrc root folder
+        if: ${{ steps.nvmrcRoot.outcome == 'success' }}
         uses: actions/setup-node@v2
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://npm.pkg.github.com'
+      - name: Set-up Node with .nvmrc input folder
+        if: ${{ steps.nvmrcRoot.outcome != 'success' && steps.nvmrc.outcome == 'success' }} 
+        uses: actions/setup-node@v2
+        with:
+          node-version-file: '${{ inputs.path }}/.nvmrc'
+          registry-url: 'https://npm.pkg.github.com'
       - name: Set-up Node 
-        if: ${{ steps.nvmrc.outcome != 'success' }}
+        if: ${{ steps.nvmrcRoot.outcome != 'success' && steps.nvmrc.outcome != 'success' }}
         uses: actions/setup-node@v2
         with:
           registry-url: 'https://npm.pkg.github.com'

@@ -13,7 +13,7 @@ jobs:
     # This job only runs for pull request comments
     name: npm publish
     if: github.event.comment.body == 'npm publish'
-    runs-on: self-hosted
+    runs-on: [self-hosted,ts-large-x64-docker-large]
     steps:
       - name: "📦 Update comment"
         uses: actions/github-script@v4

@@ -12,7 +12,7 @@ on:
         description: Token used to authenticate to the private GitHub npm registry
         required: true
     inputs:
-      path: 
+      path:
         description: Path to the project folder
         default: "."
         required: false
@@ -23,9 +23,26 @@ on:
         required: false
         type: string
 jobs:
+  get-runner:
+    name: Determine runner type
+    runs-on: ubuntu-latest
+    outputs:
+      runs-on: ${{ steps.runs-on.outputs.runs-on }}
+    steps:
+      - id: runs-on
+        run: |
+          RUNS="${{ inputs.runs-on }}"
+          if [[ "${RUNS}" == "self-hosted" ]]; then
+            echo "::set-output name=runs-on::[\"self-hosted\", \"ts-large-x64-docker-large\"]";
+          elif [[ "${RUNS}" =~ ^ts-.* ]]; then
+            echo "::set-output name=runs-on::[\"self-hosted\", \"${RUNS}\"]";
+          else
+            echo "::set-output name=runs-on::[\"${RUNS}\"]";
+          fi
   build:
     name: tradeshift/dependency-tree-update
-    runs-on: ${{ inputs.runs-on }}
+    runs-on: ${{ fromJson(needs.get-runner.outputs.runs-on) }}
+    needs: ["get-runner"]
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v2
@@ -33,31 +50,31 @@ jobs:
         continue-on-error: true
         id: nvmrcRoot
         run: |
-            [ -f .nvmrc ]
+          [ -f .nvmrc ]
       - name: Check for .nvmrc file input path
         if: ${{ steps.nvmrcRoot.outcome != 'success' }}
-        working-directory:  ${{ inputs.path }}
+        working-directory: ${{ inputs.path }}
         continue-on-error: true
         id: nvmrc
         run: |
-            [ -f .nvmrc ]
+          [ -f .nvmrc ]
       - name: Set-up Node with .nvmrc root folder
         if: ${{ steps.nvmrcRoot.outcome == 'success' }}
         uses: actions/setup-node@v2
         with:
-          node-version-file: '.nvmrc'
-          registry-url: 'https://npm.pkg.github.com'
+          node-version-file: ".nvmrc"
+          registry-url: "https://npm.pkg.github.com"
       - name: Set-up Node with .nvmrc input folder
-        if: ${{ steps.nvmrcRoot.outcome != 'success' && steps.nvmrc.outcome == 'success' }} 
+        if: ${{ steps.nvmrcRoot.outcome != 'success' && steps.nvmrc.outcome == 'success' }}
         uses: actions/setup-node@v2
         with:
-          node-version-file: '${{ inputs.path }}/.nvmrc'
-          registry-url: 'https://npm.pkg.github.com'
-      - name: Set-up Node 
+          node-version-file: "${{ inputs.path }}/.nvmrc"
+          registry-url: "https://npm.pkg.github.com"
+      - name: Set-up Node
         if: ${{ steps.nvmrcRoot.outcome != 'success' && steps.nvmrc.outcome != 'success' }}
         uses: actions/setup-node@v2
         with:
-          registry-url: 'https://npm.pkg.github.com'
+          registry-url: "https://npm.pkg.github.com"
       - name: Remove package-lock.json and yarn.lock entries from .gitignore.
         run: |
           if [ -f .gitignore ]; then
@@ -66,7 +83,7 @@ jobs:
           fi;
       - name: Update dependency tree.
         id: update
-        working-directory:  ${{ inputs.path }}
+        working-directory: ${{ inputs.path }}
         run: |
           rm -rf node_modules;
           if [ -f package-lock.json ]; then
@@ -88,24 +105,24 @@ jobs:
         id: configure
         uses: tradeshift/actions-git/configure-from-gpg-key@v1
         with:
-          gpg-key: ${{ secrets.gpg-key }}      
+          gpg-key: ${{ secrets.gpg-key }}
       - run: echo ${{ inputs.path }} > .update-deps
-      - id: hash 
+      - id: hash
         run: |
           echo "::set-output name=suffix::$(echo ${{ hashFiles('.update-deps') }} | head -c7)";
           rm .update-deps
       - id: formatPath
         if: ${{ always() }}
         run: |
-          echo "::set-output name=path::$(echo ${{ inputs.path }} | sed 's:/*$::')" 
+          echo "::set-output name=path::$(echo ${{ inputs.path }} | sed 's:/*$::')"
       - name: Create Pull Request
         uses: tradeshift/create-pull-request@v3
         with:
-          commit-message: 'chore: update dependency tree for ${{ steps.formatPath.outputs.path }}/package.json'
+          commit-message: "chore: update dependency tree for ${{ steps.formatPath.outputs.path }}/package.json"
           token: ${{ secrets.github-token }}
           committer: ${{ steps.configure.outputs.user }}
           author: ${{ steps.configure.outputs.user }}
-          title: 'chore: update dependency tree'
+          title: "chore: update dependency tree"
           body: |
             Updated dependency tree for the lock file of your node project. 
 
@@ -117,7 +134,7 @@ jobs:
 
             _This workflow was created and is maintained by the [Developer Productivity](https://tradeshift.slack.com/archives/C78TDU0FJ) team._
           branch: auto-update-dependencies-${{ steps.hash.outputs.suffix }}
-      - name: 'Create an issue when auto-update fails'
+      - name: "Create an issue when auto-update fails"
         if: ${{ failure() && !cancelled() }}
         uses: actions/github-script@v6
         with:

@@ -16,7 +16,7 @@ jobs:
     runs-on: [self-hosted,ts-large-x64-docker-large]
     steps:
       - name: "📦 Update comment"
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.github-token }}
           script: |
@@ -65,7 +65,7 @@ jobs:
       # Report results:
       - name: "📦 Success message"
         if: ${{ success() }}
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.github-token }}
           script: |
@@ -86,7 +86,7 @@ jobs:
             });
       - name: "📦 Failure message"
         if: ${{ failure() }}
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.github-token }}
           script: |

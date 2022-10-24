@@ -60,19 +60,19 @@ jobs:
           [ -f .nvmrc ]
       - name: Set-up Node with .nvmrc root folder
         if: ${{ steps.nvmrcRoot.outcome == 'success' }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version-file: ".nvmrc"
           registry-url: "https://npm.pkg.github.com"
       - name: Set-up Node with .nvmrc input folder
         if: ${{ steps.nvmrcRoot.outcome != 'success' && steps.nvmrc.outcome == 'success' }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version-file: "${{ inputs.path }}/.nvmrc"
           registry-url: "https://npm.pkg.github.com"
       - name: Set-up Node
         if: ${{ steps.nvmrcRoot.outcome != 'success' && steps.nvmrc.outcome != 'success' }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           registry-url: "https://npm.pkg.github.com"
       - name: Remove package-lock.json and yarn.lock entries from .gitignore.

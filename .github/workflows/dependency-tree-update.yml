@@ -116,7 +116,7 @@ jobs:
         run: |
           echo "path=$(echo ${{ inputs.path }} | sed 's:/*$::')" >> $GITHUB_OUTPUT;
       - name: Create Pull Request
-        uses: tradeshift/create-pull-request@v3
+        uses: tradeshift/create-pull-request@v4
         with:
           commit-message: "chore: update dependency tree for ${{ steps.formatPath.outputs.path }}/package.json"
           token: ${{ secrets.github-token }}

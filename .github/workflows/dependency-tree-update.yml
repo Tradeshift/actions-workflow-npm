@@ -33,11 +33,11 @@ jobs:
         run: |
           RUNS="${{ inputs.runs-on }}"
           if [[ "${RUNS}" == "self-hosted" ]]; then
-            echo "::set-output name=runs-on::[\"self-hosted\", \"ts-large-x64-docker-large\"]";
+            echo "runs-on=[\"self-hosted\", \"ts-large-x64-docker-large\"]" >> $GITHUB_OUTPUT;
           elif [[ "${RUNS}" =~ ^ts-.* ]]; then
-            echo "::set-output name=runs-on::[\"self-hosted\", \"${RUNS}\"]";
+            echo "runs-on=[\"self-hosted\", \"${RUNS}\"]" >> $GITHUB_OUTPUT;
           else
-            echo "::set-output name=runs-on::[\"${RUNS}\"]";
+            echo "runs-on=[\"${RUNS}\"]" >> $GITHUB_OUTPUT;
           fi
   build:
     name: tradeshift/dependency-tree-update
@@ -109,12 +109,12 @@ jobs:
       - run: echo ${{ inputs.path }} > .update-deps
       - id: hash
         run: |
-          echo "::set-output name=suffix::$(echo ${{ hashFiles('.update-deps') }} | head -c7)";
+          echo "suffix=$(echo ${{ hashFiles('.update-deps') }} | head -c7)" >> $GITHUB_OUTPUT;
           rm .update-deps
       - id: formatPath
         if: ${{ always() }}
         run: |
-          echo "::set-output name=path::$(echo ${{ inputs.path }} | sed 's:/*$::')"
+          echo "path=$(echo ${{ inputs.path }} | sed 's:/*$::')" >> $GITHUB_OUTPUT;
       - name: Create Pull Request
         uses: tradeshift/create-pull-request@v3
         with:

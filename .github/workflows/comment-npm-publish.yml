@@ -40,7 +40,7 @@ jobs:
           git fetch origin pull/${{ github.event.issue.number }}/head:pr-find-commit
           git checkout pr-find-commit
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 14
           registry-url: "https://npm.pkg.github.com/"

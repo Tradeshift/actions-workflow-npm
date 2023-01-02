@@ -13,7 +13,7 @@ jobs:
     # This job only runs for pull request comments
     name: npm publish
     if: github.event.comment.body == 'npm publish'
-    runs-on: [self-hosted,ts-large-x64-docker-large]
+    runs-on: [self-hosted, ts-large-x64-docker-large]
     steps:
       - name: "📦 Update comment"
         uses: actions/github-script@v6
@@ -21,7 +21,7 @@ jobs:
           github-token: ${{ secrets.github-token }}
           script: |
             const { repo: { owner, repo } } = context;
-            github.issues.updateComment({
+            github.rest.issues.updateComment({
               owner,
               repo,
               comment_id: ${{ github.event.comment.id }},
@@ -74,7 +74,7 @@ jobs:
             const body = `Pre-release of \`${packageName}\` successfully published :rocket:\n\n` +
               `\`\`\`\nnpm install ${packageName}@${version}\n\`\`\`\n\n` +
               "Happy testing :tophat:";
-            github.issues.updateComment({
+            github.rest.issues.updateComment({
               owner,
               repo,
               comment_id: ${{ github.event.comment.id }},
@@ -91,7 +91,7 @@ jobs:
           github-token: ${{ secrets.github-token }}
           script: |
             const { repo: { owner, repo }  } = context;
-            github.issues.updateComment({
+            github.rest.issues.updateComment({
               owner,
               repo,
               comment_id: ${{ github.event.comment.id }},

@@ -1,7 +1,7 @@
 {
     "description": "This is actions-workflow-npm",
     "maintainers": [
-        "developer-productivity"
+        "sre"
     ],
     "checks": [
         "build"

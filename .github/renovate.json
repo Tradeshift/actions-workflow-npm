@@ -1,6 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "local>Tradeshift/renovate-config:config-github-workflow(comment-npm-publish.yml)"
+    "local>Tradeshift/renovate-config:config-github-workflow(comment-npm-publish.yml)",
+    "local>Tradeshift/renovate-config:automerge-dev-deps"
   ]
 }

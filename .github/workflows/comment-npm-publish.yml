@@ -40,7 +40,7 @@ jobs:
           git fetch origin pull/${{ github.event.issue.number }}/head:pr-find-commit
           git checkout pr-find-commit
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
       - name: Check for .nvmrc file root folder
         continue-on-error: true
         id: nvmrcRoot
@@ -48,14 +48,14 @@ jobs:
           [ -f .nvmrc ]
       - name: Set up Node with .nvmrc in root
         if: ${{ steps.nvmrcRoot.outcome == 'success' }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
           registry-url: "https://npm.pkg.github.com"
           cache: "npm"
       - name: Set up Node in default version
         if: ${{ steps.nvmrcRoot.outcome != 'success' }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 14
           registry-url: "https://npm.pkg.github.com"

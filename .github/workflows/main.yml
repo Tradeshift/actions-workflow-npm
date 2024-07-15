@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: tradeshift/actions-semantic-release@v1
+      - uses: tradeshift/actions-semantic-release@v2
         id: semantic-release
         with:
           branches: |

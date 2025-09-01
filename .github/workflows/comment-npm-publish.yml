@@ -34,7 +34,7 @@ jobs:
 
       # Begin build:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: ⬇️ Checkout PR
         run: |
           git fetch origin pull/${{ github.event.issue.number }}/head:pr-find-commit

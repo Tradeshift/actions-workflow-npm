@@ -10,9 +10,16 @@ on:
 
 jobs:
   npm-publish:
-    # This job only runs for pull request comments
+    # This job only runs for the 'npm publish' comment on a pull request, and
+    # only when the commenter has write access (org member, repo owner, or
+    # collaborator). Without the author_association guard, any GitHub user could
+    # trigger arbitrary PR code execution and an npm publish on the self-hosted
+    # runner simply by commenting on a fork PR.
     name: npm publish
-    if: github.event.comment.body == 'npm publish'
+    if: >-
+      github.event.issue.pull_request
+      && github.event.comment.body == 'npm publish'
+      && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
     runs-on: [self-hosted, ts-large-x64-docker-large]
     steps:
       - name: "📦 Update comment"
